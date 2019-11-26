@@ -9,3 +9,6 @@ sub.o: sub.c
 	$(comp) -o sub.o -c sub.c
 clean:
 	rm -rf *.o main
+makelib:
+	ar -crv libarith.a add.o sub.o
+	gcc -o libarith.so add.o sub.o -shared -fPIC
