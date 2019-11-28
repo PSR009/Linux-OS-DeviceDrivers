@@ -38,19 +38,14 @@ int main(int argc, char *argv[])
         close(p1[1]);
         read(p1[0], b, 8);
         printf("Child rcvd from Parent: %d,%d\n",b[0],b[1]);
-        //close(p1[0]);
         close(p2[0]);
         c = b[0] + b[1];
-        //printf("sum = %d\n", c);
         write(p2[1], &c, 4);//strlen(argv[2]));
     }
 //parent process
     else {          
         close(p1[0]);         
-        //write(p1[1], argv[1], strlen(argv[1]));
         write(p1[1], &a, 8);//strlen(argv[2]));
-        //close(p1[1]);
-        //close(p2[1]);
         read(p2[0], &d, 4);
         printf("Parent rcvd from Child: %d\n",d);
     }
