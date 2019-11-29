@@ -12,21 +12,27 @@ int main(int argc, char *argv[])
 {
     int fds;
     int a[2] = {3,4}, b;
+    /*int g = mkfifo("/home/desd/Downloads/DESD_OS/fifo_add/desdfifo", 0600);
+    if(-1 == g)
+    {
+        perror("Error opening mkfifo\n");
+        exit(EXIT_FAILURE);
+    }*/
     fds = open("desdfifo", O_WRONLY);
     if(-1 == fds)
     {
-        perror("Error opening the file\n");
+        perror("Error opening before write\n");
         exit(EXIT_FAILURE);
-    }
-    write(fds, &a, 8);
+    }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+    write(fds, &a, sizeof(a));
     close(fds);
     fds = open("desdfifo", O_RDONLY);
     if(-1 == fds)
     {
-        perror("Error opening the file\n");
+        perror("Error opening before read\n");
         exit(EXIT_FAILURE);
     }
-    read(fds, &b, 4);
+    read(fds, &b, sizeof(b));
     printf("Rcvd from user2: sum = %d\n", b);
     close(fds);
 }
