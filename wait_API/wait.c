@@ -16,6 +16,5 @@ int main()
         wait(NULL);
         printf("After wait: Child has terminated\n");
     }
-    printf("Bye\n"); 
     return 0; 
 } 
