@@ -1,26 +1,5 @@
-#include <stdio.h>
-#include <pthread.h>
-int count = 0;
-pthread_mutex_t countMutex;
-
-void *incThread(void *data)
-{
-    while(1)
-    {
-        count++;
-        printf("Inc: %d\n",count);
-    }
-}
-
-void *decThread(void *data)
-{
-    while(1)
-    {
-        count--;
-        printf("Dec: %d\n",count);
-    }
-}
-
+#include "count.h"
+int count = 0; 
 int main()
 {
     pthread_t incId, decId;
@@ -30,4 +9,5 @@ int main()
     pthread_join(incId, NULL);
     pthread_join(decId, NULL);
     pthread_mutex_destroy(&countMutex);
+    return 0;
 }
