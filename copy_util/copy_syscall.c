@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <errno.h>
 
-#define BUFF_SIZE 8192
+#define BUFF_SIZE 64
 
 int main(int argc, char *argv[])
 {

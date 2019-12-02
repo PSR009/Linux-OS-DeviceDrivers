@@ -5,6 +5,6 @@
 int main(int argc, char *argv[])
 {
     printf("before exec\n");
-    execl("/bin/ls","/bin/ls","-al",NULL);
+    execl("/bin/ls","","-al",NULL);
     printf("after exec\n");
 }
