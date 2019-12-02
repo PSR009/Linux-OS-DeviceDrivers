@@ -6,10 +6,10 @@ void *in_thread(void *data)
     {
         sem_wait(&sem_proc_in);
         printf("Enter a:");
-        scanf("%d",&a);
+        scanf("%d", &a);
         printf("Enter b:");
-        scanf("%d",&b);
-        printf("In_thread: a = %d b = %d\n", a, b);
+        scanf("%d", &b);
+        printf("in_thread: a = %d b = %d\n", a, b);
         sem_post(&sem_in_proc);
     }
 }

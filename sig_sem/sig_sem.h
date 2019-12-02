@@ -7,5 +7,4 @@ void *proc_thread(void *);
 
 sem_t sem_in_proc;
 sem_t sem_proc_in;
-
 int a, b;
