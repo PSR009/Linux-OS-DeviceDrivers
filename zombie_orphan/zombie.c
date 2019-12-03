@@ -11,12 +11,12 @@ int main()
     if(0 == id)
     {
         printf("CHILD: PID: %d PPID: %d\n", getpid(), getppid());
-        //exit(0);
+        exit(0);
     }
     else
     {
         printf("PARENT: PID: %d PPID: %d\n", getpid(), getppid());
-        sleep(15);
+        sleep(10);
     }
     return 0;
 }
