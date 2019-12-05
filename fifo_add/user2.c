@@ -11,12 +11,13 @@
 int main(int argc, char *argv[])
 {
     int fdr, b[2], c;
-    int g = mkfifo("/home/desd/Downloads/DESD_OS/fifo_add/desdfifo", 0600);
+    /*int g = mkfifo("/home/desd/Downloads/DESD_OS/fifo_add/desdfifo", 0600);
     if(-1 == g)
     {
         perror("Error opening mkfifo\n");
         exit(EXIT_FAILURE);
     }
+    */
     fdr = open("desdfifo", O_RDONLY);
     if(-1 == fdr)
     {

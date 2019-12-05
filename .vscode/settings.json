@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "count.h": "c",
-        "types.h": "c"
+        "types.h": "c",
+        "count_sem.h": "c",
+        "stdlib.h": "c"
     }
 }
