@@ -13,19 +13,15 @@ int *p;
 
 int main()
 {
+    int fd;
+
+    fd = shm_open("/desdsem1", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
+    ftruncate(fd, sizeof(int));
+    count_s = (int *)mmap(NULL, sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+
     sem_t *sem1 = sem_open("/desdsem1", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
     sem_t *sem2 = sem_open("/desdsem2", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);   
     sem_init(sem1, 1, 1); 
-
-    int fd1, fd2;
-
-    fd1 = shm_open("/desdsem1", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
-    ftruncate(fd1, sizeof(int));
-    count_s = (int *)mmap(NULL, sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED, fd1, 0);
-
-    fd2 = shm_open("/desdsem2", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
-    ftruncate(fd2, sizeof(int));
-    p = (int *)mmap(NULL, sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED, fd2, 0);
 
     //sem_wait(sem1);
     *count_s = 0;
