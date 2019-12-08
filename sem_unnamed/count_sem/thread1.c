@@ -8,7 +8,7 @@ void *T1(void *data)
         t1_id = pthread_self();
         int *arr1 = getBlock(t1_id);
         printf("T1 got block with id: %ld\n", t1_id);
-        sleep(4);
+        sleep(3);
         freeBlock(t1_id);
         printf("T1 freed block with id: %ld\n", t1_id);
     }

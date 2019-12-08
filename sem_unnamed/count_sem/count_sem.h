@@ -20,4 +20,4 @@ sem_t devices;
 int *buff[BUFF_NO];
 int count1;
 int count2;
-pthread_t t_id1, t_id2, t_id3;
+pthread_t t_id1, t_id2;

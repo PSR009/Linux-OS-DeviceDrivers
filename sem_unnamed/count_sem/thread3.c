@@ -2,7 +2,7 @@
 
 void *T3(void *data)
 {
-    while(1)
+    while (1)
     {
         pthread_t t3_id;
         t3_id = pthread_self();

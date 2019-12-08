@@ -31,7 +31,7 @@ void createBlock()
             fprintf(stderr, "Couldn't allocate\n");
         }
     }
-    printf("Blocks created: %d\n", BUFF_NO);
+    printf("\nBlocks created: %d\n\n", BUFF_NO);
 }
 
 void freeBlock(pthread_t t_id)
@@ -39,12 +39,13 @@ void freeBlock(pthread_t t_id)
     if (t_id == t_id1)
     {
         sem_post(&devices);
-        //t_id1 = NULL;
+        t_id1 = 0;
         count1++;
     }
     else if (t_id == t_id2)
     {
         sem_post(&devices);
+        t_id2 = 0;
         count2++;
     }
 }
