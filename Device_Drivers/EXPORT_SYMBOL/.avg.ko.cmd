@@ -1,0 +1,1 @@
+cmd_/home/prakkisathwikram/Downloads/DD/Programs/EXPORT_SYMBOL/avg.ko := ld -r -m elf_x86_64  -z max-page-size=0x200000 -T ./scripts/module-common.lds  --build-id  -o /home/prakkisathwikram/Downloads/DD/Programs/EXPORT_SYMBOL/avg.ko /home/prakkisathwikram/Downloads/DD/Programs/EXPORT_SYMBOL/avg.o /home/prakkisathwikram/Downloads/DD/Programs/EXPORT_SYMBOL/avg.mod.o ;  true

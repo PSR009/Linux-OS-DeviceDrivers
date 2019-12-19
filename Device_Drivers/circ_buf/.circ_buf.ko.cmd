@@ -1,0 +1,1 @@
+cmd_/home/prakkisathwikram/Downloads/ELDD/Programs/circ_buf/circ_buf.ko := ld -r -m elf_x86_64  -z max-page-size=0x200000 -T ./scripts/module-common.lds  --build-id  -o /home/prakkisathwikram/Downloads/ELDD/Programs/circ_buf/circ_buf.ko /home/prakkisathwikram/Downloads/ELDD/Programs/circ_buf/circ_buf.o /home/prakkisathwikram/Downloads/ELDD/Programs/circ_buf/circ_buf.mod.o ;  true
