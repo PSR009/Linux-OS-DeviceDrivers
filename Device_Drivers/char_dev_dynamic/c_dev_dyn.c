@@ -14,7 +14,7 @@
 
 dev_t dev_no;
 struct cdev my_cdev;
-char user_buff[BUFF_SIZE];
+char ker_buff[BUFF_SIZE];
 
 static int test_open(struct inode *, struct file *);
 static ssize_t test_read(struct file *, char *, size_t, loff_t *);
@@ -66,18 +66,18 @@ static int test_open(struct inode *inodep, struct file *filep)
     return 0;
 }
 
-static ssize_t test_read(struct file *filep, char *buff, size_t len, loff_t *off)
+static ssize_t test_read(struct file *filep, char *ubuff, size_t len, loff_t *off)
 {
     printk("\nIn test_read\n");
-    copy_to_user(buff, user_buff, len);
+    copy_to_user(ubuff, ker_buff, len);
     return len;
 }
 
-static ssize_t test_write(struct file *filep, const char *buff, size_t len, loff_t *off)
+static ssize_t test_write(struct file *filep, const char *ubuff, size_t len, loff_t *off)
 {
     printk("\nIn test_write\n");
-    copy_from_user(user_buff, buff, len);
-    user_buff[len] = 0;
+    copy_from_user(ker_buff, ubuff, len);
+    ker_buff[len] = 0;
     return len;
 }
 
