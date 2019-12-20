@@ -12,21 +12,22 @@
 #include <linux/sched.h>
 
 #define DEV_COUNT 4
-#define BUFF_SIZE 8
+#define BUFF_SIZE 16
 
 dev_t dev_no;
-
+int i;
 struct my_dev
 {
     struct cdev my_cdev;
     struct circ_buf cbuf;
-    wait_queue_head_t twq;
+    wait_queue_head_t my_q;
 } devs[DEV_COUNT];
 
 static int test_open(struct inode *, struct file *);
 static ssize_t test_read(struct file *, char *, size_t, loff_t *);
 static ssize_t test_write(struct file *, const char *, size_t, loff_t *);
 static int test_release(struct inode *, struct file *);
+long test_ioctl(struct file *, unsigned int, unsigned long);
 
 struct file_operations my_fops = {
     .open = test_open,
@@ -46,44 +47,46 @@ static int __init test_init(void)
     }
     printk("\nMajor = %d Minor = %d\n", MAJOR(dev_no), MINOR(dev_no));
 
-    for (int i = 0; i < DEV_COUNT; i++)
+    for (i = 0; i < DEV_COUNT; i++)
     {
-        cdev_init(devs[i].(&my_cdev), devs[i].(&my_fops));
-    }
-
-    for (int j = 0; j < DEV_COUNT; j++)
-    {
-
-        devs[j].cbuf.buf = kmalloc(BUFF_SIZE, GFP_KERNEL);
-        if (!(devs[j].cbuf.buf))
+        cdev_init(&devs[i].my_cdev, &my_fops);
+        devs[i].cbuf.buf = kmalloc(BUFF_SIZE, GFP_KERNEL);
+        if (!(devs[i].cbuf.buf))
         {
             printk("Error: Couldn't allocate\n");
-            unregister_chrdev_region(dev_no, DEV_COUNT);
-            return -ENOMEM;
+            goto error;
         }
     }
 
-    for (int k = 0; k < DEV_COUNT; k++)
+    for (i = 0; i < DEV_COUNT; i++)
     {
-        devs[k].init_waitqueue_head(&twq);
-    }
-
-    err = cdev_add(&my_cdev, dev_no, DEV_COUNT);
-    if (err < 0)
-    {
-        printk("\nError: Couldn't notify kernel to add device\n");
-        kfree(cbuf.buf);
-        unregister_chrdev_region(dev_no, DEV_COUNT);
-        return err;
+        init_waitqueue_head(&devs[i].my_q);
+        err = cdev_add(&devs[i].my_cdev, dev_no, DEV_COUNT);
+        if (err < 0)
+        {
+            printk("\nError: Couldn't notify kernel to add device\n");
+            goto error;
+        }
     }
     printk("\nChar_dev: init:\n");
     return 0;
+
+error:
+    for (--i; i >= 0; i--)
+    {
+        kfree(devs[i].cbuf.buf);
+    }
+    unregister_chrdev_region(dev_no, DEV_COUNT);
+    return -1;
 }
 
 static void __exit test_exit(void)
 {
-    cdev_del(&my_cdev);
-    kfree(cbuf.buf);
+    for (i = 0; i < DEV_COUNT; i++)
+    {
+        kfree(devs[i].cbuf.buf);
+        cdev_del(&devs[i].my_cdev);
+    }
     unregister_chrdev_region(dev_no, DEV_COUNT);
     printk("\nChar_dev: exit\n");
 }
@@ -91,6 +94,8 @@ static void __exit test_exit(void)
 static int test_open(struct inode *inodep, struct file *filep)
 {
     printk("\nIn test_open\n");
+    struct my_dev *mdev = container_of(inodep->i_cdev, struct my_dev, my_cdev);
+    filep->private_data = mdev;
     return 0;
 }
 
@@ -99,25 +104,32 @@ static ssize_t test_read(struct file *filep, char *ubuff, size_t count, loff_t *
     int i, m, ret;
     printk("\nIn test_read\n");
 
-    if ((filep->f_flags & O_NONBLOCK) && (CIRC_CNT(cbuf.head, cbuf.tail, BUFF_SIZE) == 0))
+    struct my_dev *tdev = filep->private_data;
+    if (filep->f_flags & O_NONBLOCK)
     {
-        return 0;
+        if (CIRC_CNT(tdev->cbuf.head, tdev->cbuf.tail, BUFF_SIZE) == 0)
+        {
+            return -EAGAIN;
+        }
     }
+    else
+    {
+        }
 
-    wait_event_interruptible(twq, CIRC_CNT(cbuf.head, cbuf.tail, BUFF_SIZE) >= 1);
+    wait_event_interruptible(tdev->my_q, CIRC_CNT(tdev->cbuf.head, tdev->cbuf.tail, BUFF_SIZE) >= 1);
 
-    m = min(CIRC_CNT(cbuf.head, cbuf.tail, BUFF_SIZE), (int)count);
+    m = min(CIRC_CNT(tdev->cbuf.head, tdev->cbuf.tail, BUFF_SIZE), (int)count);
 
     for (i = 0; i < m; i++)
     {
-        ret = copy_to_user(ubuff + i, cbuf.buf + cbuf.tail, 1);
+        ret = copy_to_user(ubuff + i, tdev->cbuf.buf + tdev->cbuf.tail, 1);
         if (ret)
         {
             printk("Error: Couldn't read\n");
             return -ENOMEM;
         }
-        printk("read: %c\n", ubuff[i]);
-        cbuf.tail = (cbuf.tail + 1) & (BUFF_SIZE - 1);
+        printk("read: %c", ubuff[i]);
+        tdev->cbuf.tail = (tdev->cbuf.tail + 1) & (BUFF_SIZE - 1);
     }
     return i;
 }
@@ -127,20 +139,21 @@ static ssize_t test_write(struct file *filep, const char *ubuff, size_t count, l
     int i, m, ret;
     printk("\nIn test_write\n");
 
-    m = min(CIRC_SPACE(cbuf.head, cbuf.tail, BUFF_SIZE), (int)count);
+    struct my_dev *tdev = filep->private_data;
+    m = min(CIRC_SPACE(tdev->cbuf.head, tdev->cbuf.tail, BUFF_SIZE), (int)count);
 
     for (i = 0; i < m; i++)
     {
-        ret = copy_from_user(cbuf.buf + cbuf.head, ubuff + i, 1);
+        ret = copy_from_user(tdev->cbuf.buf + tdev->cbuf.head, ubuff + i, 1);
         if (ret)
         {
             printk("Error: Couldn't write\n");
             return -ENOMEM;
         }
-        printk("wrote: %c\n", cbuf.buf[cbuf.head]);
-        cbuf.head = (cbuf.head + 1) & (BUFF_SIZE - 1);
+        printk("wrote: %c", tdev->cbuf.buf[tdev->cbuf.head]);
+        tdev->cbuf.head = (tdev->cbuf.head + 1) & (BUFF_SIZE - 1);
     }
-    wake_up(&twq);
+    wake_up(&tdev->my_q);
     return i;
 }
 
@@ -152,3 +165,4 @@ static int test_release(struct inode *inodep, struct file *filep)
 
 module_init(test_init);
 module_exit(test_exit);
+MODULE_LICENSE("GPL");

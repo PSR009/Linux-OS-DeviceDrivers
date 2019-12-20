@@ -22,18 +22,18 @@ struct cdev my_cdev;
 struct circ_buf cbuf;
 wait_queue_head_t twq;
 
-static int test_open(struct inode *, struct file *);
-static ssize_t test_read(struct file *, char *, size_t, loff_t *);
-static ssize_t test_write(struct file *, const char *, size_t, loff_t *);
-static int test_release(struct inode *, struct file *);
-long test_ioctl(struct file *, unsigned int, unsigned long);
+static int ioctl_open(struct inode *, struct file *);
+static ssize_t ioctl_read(struct file *, char *, size_t, loff_t *);
+static ssize_t ioctl_write(struct file *, const char *, size_t, loff_t *);
+static int ioctl_release(struct inode *, struct file *);
+long _ioctl(struct file *, unsigned int, unsigned long);
 
 struct file_operations my_fops = {
-    .open = test_open,
-    .read = test_read,
-    .write = test_write,
-    .release = test_release,
-    .unlocked_ioctl = test_ioctl,
+    .open = ioctl_open,
+    .read = ioctl_read,
+    .write = ioctl_write,
+    .release = ioctl_release,
+    .unlocked_ioctl = _ioctl,
 };
 
 static int __init test_init(void)
@@ -79,7 +79,7 @@ static void __exit test_exit(void)
     printk("\nChar_dev: exit\n");
 }
 int k, l;
-long test_ioctl(struct file *filep, unsigned int cmd, unsigned long arg)
+long _ioctl(struct file *filep, unsigned int cmd, unsigned long arg)
 {
     switch (cmd)
     {
@@ -107,16 +107,16 @@ long test_ioctl(struct file *filep, unsigned int cmd, unsigned long arg)
     return 0;
 }
 
-static int test_open(struct inode *inodep, struct file *filep)
+static int ioctl_open(struct inode *inodep, struct file *filep)
 {
-    printk("\nIn test_open\n");
+    printk("\nIn ioctl_open\n");
     return 0;
 }
 
-static ssize_t test_read(struct file *filep, char *ubuff, size_t count, loff_t *off)
+static ssize_t ioctl_read(struct file *filep, char *ubuff, size_t count, loff_t *off)
 {
     int i, m, ret;
-    printk("\nIn test_read\n");
+    printk("\nIn ioctl_read\n");
 
     if ((filep->f_flags & O_NONBLOCK) && (CIRC_CNT(cbuf.head, cbuf.tail, BUFF_SIZE) == 0))
     {
@@ -141,10 +141,10 @@ static ssize_t test_read(struct file *filep, char *ubuff, size_t count, loff_t *
     return i;
 }
 
-static ssize_t test_write(struct file *filep, const char *ubuff, size_t count, loff_t *off)
+static ssize_t ioctl_write(struct file *filep, const char *ubuff, size_t count, loff_t *off)
 {
     int i, m, ret;
-    printk("\nIn test_write\n");
+    printk("\nIn ioctl_write\n");
 
     m = min(CIRC_SPACE(cbuf.head, cbuf.tail, BUFF_SIZE), (int)count);
 
@@ -163,7 +163,7 @@ static ssize_t test_write(struct file *filep, const char *ubuff, size_t count, l
     return i;
 }
 
-static int test_release(struct inode *inodep, struct file *filep)
+static int ioctl_release(struct inode *inodep, struct file *filep)
 {
     printk("\nIn test_close\n");
     return 0;
@@ -171,3 +171,4 @@ static int test_release(struct inode *inodep, struct file *filep)
 
 module_init(test_init);
 module_exit(test_exit);
+MODULE_LICENSE("GPL");
