@@ -1,4 +1,4 @@
-obj-m := circ_buf.o
+obj-m := def_works.o
 
 	KERNELDIR = /lib/modules/$(shell uname -r)/build
 #	KERNELDIR = /lib/modules/4.19.86-v7l+/build

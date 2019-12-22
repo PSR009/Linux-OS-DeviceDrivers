@@ -7,7 +7,6 @@
 
 #define BUFF_SIZE 16
 char send_buff[BUFF_SIZE] = "Division";
-char recv_buff[BUFF_SIZE];
 
 int main()
 {
@@ -26,13 +25,5 @@ int main()
         return ret;
     }
     printf("\nDivDev: Wrote %d bytes\n", ret);
-
-    ret = read(fd, recv_buff, BUFF_SIZE);
-    if (ret < 0)
-    {
-        perror("Error: Couldn't read from Div device\n");
-        return ret;
-    }
-    printf("\nDivDev: Read %d bytes : %s\n", ret, recv_buff);
     return 0;
 }

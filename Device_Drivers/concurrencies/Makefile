@@ -1,4 +1,4 @@
-obj-m := circ_buf.o
+obj-m := concur.o
 
 	KERNELDIR = /lib/modules/$(shell uname -r)/build
 #	KERNELDIR = /lib/modules/4.19.86-v7l+/build
@@ -12,7 +12,8 @@ default:
 
 clean:
 	$(MAKE) -C $(KERNELDIR) M=$(PWD) clean
-	rm prod cons
+	rm -rf prod
+	rm -rf cons
 
 install:
 	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules_install

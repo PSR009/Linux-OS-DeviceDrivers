@@ -12,7 +12,7 @@ char send_buff[BUFF_SIZE] = "Hello";
 int main()
 {
     int fd, ret;
-    fd = open("/dev/circ_buf", O_RDWR);
+    fd = open("/dev/concur", O_RDWR);
     if (fd < 0)
     {
         perror("\nError: Couldn't open device\n");

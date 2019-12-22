@@ -92,7 +92,7 @@ static ssize_t test_read(struct file *filep, char *ubuff, size_t count, loff_t *
             printk("Error: Couldn't read\n");
             return -ENOMEM;
         }
-        printk("read: %c\n", ubuff[i]);
+        printk("read: %c", ubuff[i]);
         cbuf.tail = (cbuf.tail + 1) & (BUFF_SIZE - 1);
     }
     return i;
@@ -113,7 +113,7 @@ static ssize_t test_write(struct file *filep, const char *ubuff, size_t count, l
             printk("Error: Couldn't write\n");
             return -ENOMEM;
         }
-        printk("wrote: %c\n", cbuf.buf[cbuf.head]);
+        printk("wrote: %c", cbuf.buf[cbuf.head]);
         cbuf.head = (cbuf.head + 1) & (BUFF_SIZE - 1);
     }
     return i;

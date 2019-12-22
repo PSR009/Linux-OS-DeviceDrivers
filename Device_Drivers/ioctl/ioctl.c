@@ -118,9 +118,10 @@ static ssize_t ioctl_read(struct file *filep, char *ubuff, size_t count, loff_t 
     int i, m, ret;
     printk("\nIn ioctl_read\n");
 
-    if ((filep->f_flags & O_NONBLOCK) && (CIRC_CNT(cbuf.head, cbuf.tail, BUFF_SIZE) == 0))
+    if (filep->f_flags & O_NONBLOCK)
     {
-        return 0;
+        if (CIRC_CNT(cbuf.head, cbuf.tail, BUFF_SIZE) == 0)
+            return 0;
     }
 
     wait_event_interruptible(twq, CIRC_CNT(cbuf.head, cbuf.tail, BUFF_SIZE) >= 1);

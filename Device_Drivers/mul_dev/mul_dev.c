@@ -13,9 +13,10 @@
 
 #define DEV_COUNT 4
 #define BUFF_SIZE 16
+#define MY_MAJOR 241
 
 dev_t dev_no;
-int i;
+int i, j;
 struct my_dev
 {
     struct cdev my_cdev;
@@ -39,6 +40,10 @@ struct file_operations my_fops = {
 static int __init test_init(void)
 {
     int err;
+    dev_t tmp_dev;
+    //dev_no = MKDEV(MY_MAJOR, 0);
+    //err = register_chrdev_region(dev_no, DEV_COUNT, "mul_dev");
+
     err = alloc_chrdev_region(&dev_no, 0, DEV_COUNT, "mul_dev");
     if (err < 0)
     {
@@ -54,24 +59,29 @@ static int __init test_init(void)
         if (!(devs[i].cbuf.buf))
         {
             printk("Error: Couldn't allocate\n");
-            goto error;
+            goto cbuf_err;
         }
+        init_waitqueue_head(&devs[i].my_q);
     }
 
-    for (i = 0; i < DEV_COUNT; i++)
+    for (j = 0; j < DEV_COUNT; j++)
     {
-        init_waitqueue_head(&devs[i].my_q);
-        err = cdev_add(&devs[i].my_cdev, dev_no, DEV_COUNT);
+        tmp_dev = MKDEV(MAJOR(dev_no), MINOR(dev_no) + j);
+        err = cdev_add(&devs[j].my_cdev, tmp_dev, 1);
         if (err < 0)
         {
             printk("\nError: Couldn't notify kernel to add device\n");
-            goto error;
+            goto cdev_err;
         }
     }
     printk("\nChar_dev: init:\n");
     return 0;
 
-error:
+cdev_err:
+    for (--j; j >= 0; j--)
+        cdev_del(&devs[j].my_cdev);
+
+cbuf_err:
     for (--i; i >= 0; i--)
     {
         kfree(devs[i].cbuf.buf);
@@ -84,8 +94,8 @@ static void __exit test_exit(void)
 {
     for (i = 0; i < DEV_COUNT; i++)
     {
-        kfree(devs[i].cbuf.buf);
         cdev_del(&devs[i].my_cdev);
+        kfree(devs[i].cbuf.buf);
     }
     unregister_chrdev_region(dev_no, DEV_COUNT);
     printk("\nChar_dev: exit\n");
@@ -111,13 +121,15 @@ static ssize_t test_read(struct file *filep, char *ubuff, size_t count, loff_t *
         {
             return -EAGAIN;
         }
-    }
-    else
-    {
+        else
+        {
+            goto next;
         }
-
+        
+    }
     wait_event_interruptible(tdev->my_q, CIRC_CNT(tdev->cbuf.head, tdev->cbuf.tail, BUFF_SIZE) >= 1);
 
+next:
     m = min(CIRC_CNT(tdev->cbuf.head, tdev->cbuf.tail, BUFF_SIZE), (int)count);
 
     for (i = 0; i < m; i++)
