@@ -90,11 +90,15 @@ static ssize_t test_read(struct file *filep, char *ubuff, size_t count, loff_t *
     if (filep->f_flags & O_NONBLOCK)
     {
         if (CIRC_CNT(cbuf.head, cbuf.tail, BUFF_SIZE) == 0)
-            return 0;
+            return -EAGAIN;
+        else
+        {
+            goto skip_wait;
+        }
     }
-
     wait_event_interruptible(twq, CIRC_CNT(cbuf.head, cbuf.tail, BUFF_SIZE) >= 1);
 
+skip_wait:
     m = min(CIRC_CNT(cbuf.head, cbuf.tail, BUFF_SIZE), (int)count);
 
     for (i = 0; i < m; i++)

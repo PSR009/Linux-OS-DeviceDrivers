@@ -7,9 +7,6 @@
 #include <string.h>
 #include "my_ioctl.h"
 
-#define BUFF_SIZE 8
-char send_buff[BUFF_SIZE] = "Hello";
-
 int main()
 {
     int fd, ret, k = 10, l;

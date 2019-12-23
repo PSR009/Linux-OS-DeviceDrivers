@@ -25,7 +25,7 @@ MODULE_INFO(retpoline, "Y");
 static const char __module_depends[]
 __used
 __attribute__((section(".modinfo"))) =
-"depends=";
+"depends=add_func";
 
 
-MODULE_INFO(srcversion, "AFA34A0855B6AC72340CEB3");
+MODULE_INFO(srcversion, "677255487F83AB5BAA1F40F");

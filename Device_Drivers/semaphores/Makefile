@@ -1,4 +1,4 @@
-obj-m := concur.o
+obj-m := sem.o
 
 	KERNELDIR = /lib/modules/$(shell uname -r)/build
 #	KERNELDIR = /lib/modules/4.19.86-v7l+/build

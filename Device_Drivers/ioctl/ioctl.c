@@ -21,6 +21,7 @@ dev_t dev_no;
 struct cdev my_cdev;
 struct circ_buf cbuf;
 wait_queue_head_t twq;
+int k, l;
 
 static int ioctl_open(struct inode *, struct file *);
 static ssize_t ioctl_read(struct file *, char *, size_t, loff_t *);
@@ -78,7 +79,7 @@ static void __exit test_exit(void)
     unregister_chrdev_region(dev_no, DEV_COUNT);
     printk("\nChar_dev: exit\n");
 }
-int k, l;
+
 long _ioctl(struct file *filep, unsigned int cmd, unsigned long arg)
 {
     switch (cmd)
@@ -121,7 +122,7 @@ static ssize_t ioctl_read(struct file *filep, char *ubuff, size_t count, loff_t 
     if (filep->f_flags & O_NONBLOCK)
     {
         if (CIRC_CNT(cbuf.head, cbuf.tail, BUFF_SIZE) == 0)
-            return 0;
+            return -EAGAIN;
     }
 
     wait_event_interruptible(twq, CIRC_CNT(cbuf.head, cbuf.tail, BUFF_SIZE) >= 1);

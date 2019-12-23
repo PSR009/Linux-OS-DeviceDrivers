@@ -1,3 +1,3 @@
-/home/prakkisathwikram/Downloads/ELDD/Programs/ioctl/ioctl.ko
-/home/prakkisathwikram/Downloads/ELDD/Programs/ioctl/ioctl.o
+/home/prakkisathwikram/Downloads/DESD/Device_Drivers/ioctl/ioctl.ko
+/home/prakkisathwikram/Downloads/DESD/Device_Drivers/ioctl/ioctl.o
 

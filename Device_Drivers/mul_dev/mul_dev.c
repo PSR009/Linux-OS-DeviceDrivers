@@ -123,13 +123,13 @@ static ssize_t test_read(struct file *filep, char *ubuff, size_t count, loff_t *
         }
         else
         {
-            goto next;
+            goto skip_wait;
         }
         
     }
     wait_event_interruptible(tdev->my_q, CIRC_CNT(tdev->cbuf.head, tdev->cbuf.tail, BUFF_SIZE) >= 1);
 
-next:
+skip_wait:
     m = min(CIRC_CNT(tdev->cbuf.head, tdev->cbuf.tail, BUFF_SIZE), (int)count);
 
     for (i = 0; i < m; i++)
