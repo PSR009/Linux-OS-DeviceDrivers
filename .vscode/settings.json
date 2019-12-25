@@ -5,6 +5,8 @@
         "count_sem.h": "c",
         "stdlib.h": "c",
         "stdio.h": "c",
-        "inet.h": "c"
-    }
+        "inet.h": "c",
+        "string.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
 }
