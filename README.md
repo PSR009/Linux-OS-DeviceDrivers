@@ -11,8 +11,8 @@
 5. [Inter-process Communication]
     - [pipe()](/Operating_System/pipe) system call: between related processes (parent-child)
     - mkfifo: between unrelated processes
-        - demo(Operating_System/fifo_demo)
-        - addition(Operating_System/fifo_add)
+        - [demo](Operating_System/fifo_demo)
+        - [addition](Operating_System/fifo_add)
 6. [Zombie and Orphan Processes](/Operating_System/zombie_orphan/)
 7. [wait API's](/Operating_System/wait_API/)
     - [Relation between Parent-Child Processes](/Operating_System/wait_API/wait.c)
@@ -23,7 +23,7 @@
     - [Paren-Child Processes](/Operating_System/exec/exec2.c)
 9. [shell](/Operating_System/shell/)
     - [Demo](/Operating_System/shell/simple.c)
-    - [Creating own shell gui](/Operating_System/shell/shell.c)
+    - [Creating a shell GUI](/Operating_System/shell/shell.c)
 10. [POSIX Threads](/Operating_System/pthread,race_cond/)
     - [Demo](/Operating_System/pthread,race_cond/demo.c)
     - [Creating a race condition](/Operating_System/pthread,race_cond/race_cond.c)
@@ -37,7 +37,7 @@
         - [Counting Semaphores](/Operating_System/sem_unnamed/count_sem/)
     - [Named](/Operating_System/sem_named/)
         - [Mutually Exclusive Semaphore](/Operating_System/sem_named/me_sem_unn/)
-        - [Signaling Semaphores](/Operating_System/sem_named/sig_sem_unn/)
+        - [Signaling Semaphore](/Operating_System/sem_named/sig_sem_unn/)
 13. [Read-Write locks](/Operating_System/rwlocks/)
 14. [Barriers](/Operating_System/barrier/)
     - [Demo](/Operating_System/barrier/barrier.c)
