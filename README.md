@@ -6,8 +6,8 @@
 2. [Writing a Makefile](/Operating_System/Stack) (Example: Stack Operations)
 3. [System vs. Library call](/Operating_System/copy_util...sys_vs_lib/)
 4. fork() system call
-  - [Demo](/Operating_System/fork/)
-  - [Creating Parent-Child Processes](/Operating_System/fork2/)
+    - [Demo](/Operating_System/fork/)
+    - [Creating Parent-Child Processes](/Operating_System/fork2/)
 5. [Inter-process Communication]
   - [pipe()](/Operating_System/pipe) system call: between related processes (parent-child)
   - mkfifo: between unrelated processes
