@@ -8,20 +8,20 @@
 4. fork() system call
     - [Demo](/Operating_System/fork/)
     - [Creating Parent-Child Processes](/Operating_System/fork2/)
-5. [Inter-process Communication]
+5. Inter-process Communication
     - [pipe()](/Operating_System/pipe) system call: between related processes (parent-child)
     - mkfifo: between unrelated processes
         - [demo](Operating_System/fifo_demo)
         - [addition](Operating_System/fifo_add)
 6. [Zombie and Orphan Processes](/Operating_System/zombie_orphan/)
-7. [wait API's](/Operating_System/wait_API/)
+7. [wait() API's](/Operating_System/wait_API/)
     - [Relation between Parent-Child Processes](/Operating_System/wait_API/wait.c)
     - [Process status](/Operating_System/wait_API/wait_WIF.c)
-    - [waitpid API](/Operating_System/wait_API/waitpid.c)
+    - [waitpid() API](/Operating_System/wait_API/waitpid.c)
 8. [exec()](/Operating_System/exec/) system call
     - [Demo](/Operating_System/exec/exec.c)
     - [Paren-Child Processes](/Operating_System/exec/exec2.c)
-9. [shell](/Operating_System/shell/)
+9. [Shell](/Operating_System/shell/)
     - [Demo](/Operating_System/shell/simple.c)
     - [Creating a shell GUI](/Operating_System/shell/shell.c)
 10. [POSIX Threads](/Operating_System/pthread,race_cond/)
